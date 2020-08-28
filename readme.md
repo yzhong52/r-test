@@ -194,3 +194,102 @@ yum install git
 ```
 
 # Let's start over with a Ubuntu instance
+
+https://docs.rstudio.com/shiny-server/#ubuntu-14.04
+
+```
+sudo apt-get update
+sudo apt-get install r-base
+sudo apt-get install r-base-dev
+sudo apt-get install gdebi-core
+sudo gdebi shiny-server-v1.5.14.deb
+```
+
+Put this under `~/.Rprofile`:
+
+```
+options(download.file.method = "libcurl")
+local({
+  r <- getOption("repos")
+  r["CRAN"] <- "https://cran.rstudio.com/"
+  options(repos=r)
+})
+```
+
+```
+sudo su - -c "R -e \"install.packages('shiny')\""
+```
+
+Looking good after bumping memory to 2G.
+
+```
+> install.packages('shiny')
+Installing package into ‘/usr/local/lib/R/site-library’
+(as ‘lib’ is unspecified)
+trying URL 'https://cran.rstudio.com/src/contrib/shiny_1.5.0.tar.gz'
+Content type 'application/x-gzip' length 3472148 bytes (3.3 MB)
+==================================================
+downloaded 3.3 MB
+
+* installing *source* package ‘shiny’ ...
+** package ‘shiny’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (shiny)
+
+The downloaded source packages are in
+        ‘/tmp/RtmpZzCttF/downloaded_packages’
+```
+
+Continue
+
+https://rstudio.com/products/shiny/download-server/ubuntu/
+
+```
+# wget https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.14.948-amd64.deb
+# sudo gdebi shiny-server-1.5.14.948-amd64.deb
+# sudo gdebi shiny-server-1.5.14.948-amd64.deb
+
+Reading package lists... Done
+Building dependency tree        
+Reading state information... Done
+Reading state information... Done
+
+Shiny Server
+ Shiny Server is a server program from RStudio, Inc. that makes Shiny applications available over the web. Shiny is a web application framework for the R statistical computation language.
+Do you want to install the software package? [y/N]:y
+/usr/bin/gdebi:113: FutureWarning: Possible nested set at position 1
+  c = findall("[[(](\S+)/\S+[])]", msg)[0].lower()
+Selecting previously unselected package shiny-server.
+(Reading database ... 118173 files and directories currently installed.)
+Preparing to unpack shiny-server-1.5.14.948-amd64.deb ...
+Unpacking shiny-server (1.5.14.948) ...
+Setting up shiny-server (1.5.14.948) ...
+Creating user shiny
+Adding LANG to /etc/systemd/system/shiny-server.service, setting to en_US.UTF-8
+Created symlink /etc/systemd/system/multi-user.target.wants/shiny-server.service → /etc/systemd/system/shiny-server.service.
+● shiny-server.service - ShinyServer
+     Loaded: loaded (/etc/systemd/system/shiny-server.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2020-08-28 10:59:36 CST; 17ms ago
+   Main PID: 17541 (shiny-server)
+      Tasks: 1 (limit: 2319)
+     Memory: 104.0K
+     CGroup: /system.slice/shiny-server.service
+             └─17541 /opt/shiny-server/ext/node/bin/shiny-server /opt/shiny-server/lib/main.js
+
+Aug 28 10:59:36 iZ0xi1qg6uo38rzjvyo35eZ systemd[1]: Started ShinyServer.
+```
+
+管理》 本实例安全组 》 安全组列表》手动添加》目的3838》搜去俺对象 `0.0.0.0/0`
+
+
+cd /srv/shiny-server
